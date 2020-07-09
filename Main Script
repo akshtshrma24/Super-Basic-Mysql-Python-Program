@@ -1,0 +1,86 @@
+import mysql
+from mysql.connector import Error
+P = (input("What Is your root password? : "))
+DB = (input("Which Database? : "))
+Path_Selection = (input("Would You like to View, Create a table, insert into a preexisting table, or Delete a table?Type View, Create, Insert, or Delete : "))
+V = 'View'
+C ="Create"
+I = "Insert"
+D = "Delete"
+if Path_Selection == C:
+	Name = (input("What would you like to name your table? : "))
+	Row1= (input("What would you like to name the row?: "))
+	Row2 = (input("What would you like to name the SECOND row?: "))
+	connection = mysql.connector.connect(user= 'root',
+                password = f'{P}',
+                database = f'{DB}',
+                host = 'localhost',)
+	cursor = connection.cursor()
+	cursor.execute(f'CREATE TABLE {Name} ({Row1} varchar(255), {Row2} varchar(255))')
+	print("Here is your table Sir")
+	cursor.execute("SHOW TABLES")
+	for x in cursor:
+		print(x)
+
+if Path_Selection == V:
+	try:
+		connection = mysql.connector.connect(user= 'root',
+		password = f'{P}',
+		database = f'{DB}',
+		host = 'localhost',)
+		cursor = connection.cursor()
+		cursor.execute("SHOW TABLES")
+		for x in cursor:
+			print(x)
+		Viewing_Selection = (input("Which one u wanna see? : "))
+		sql_select_Query = f'select * from {Viewing_Selection}'
+		cursor.execute(sql_select_Query)
+		for x in cursor:
+			print(x)
+		connection.close()
+		cursor.close()
+		print("Goodbye Sir")
+	except Error as e:
+		print("There was an error loading your tables sir")
+		connection.close()
+		cursor.close()
+		print("Goodbye Sir")
+
+if Path_Selection == I:
+	connection = mysql.connector.connect(user= 'root',
+		password = f'{P}',
+		database = f'{DB}',
+		host = 'localhost',)
+	cursor = connection.cursor()
+	cursor.execute("Show Tables")
+	for x in cursor:
+		print(x)
+	Inserting_Selection = (input("Which one u wanna insert into? : "))
+	Row1Name = (input('What is the name of the first row?'))
+	Row2Name = (input('What is the name of the second row?'))
+	val = (input("Insert as you please in 'x','y' Format : "))
+	cursor.execute(f"Insert into {Inserting_Selection} ({Row1Name}, {Row2Name}) VALUES ({val})")
+	connection.commit()
+	cursor.execute(f'Select* from {Inserting_Selection}')
+	for x in cursor:
+		print(x)
+	connection.close()
+	cursor.close()
+	print("It has been Inserted")
+if Path_Selection == D:
+	connection = mysql.connector.connect(user= 'root',
+		password = f'{P}',
+		database = f'{DB}',
+		host = 'localhost',)
+	cursor = connection.cursor()
+	cursor.execute("Show tables")
+	for x in cursor:
+		print(x)
+	Deletion_Selection = (input("Which one would you like to delete? : "))
+	cursor.execute(f"Drop table {Deletion_Selection}")
+	cursor.execute("Show tables")
+	for x in cursor:
+		print(x)
+	print(f"{Deletion_Selection} has been deleted.")
+	connection.close()
+	cursor.close()
